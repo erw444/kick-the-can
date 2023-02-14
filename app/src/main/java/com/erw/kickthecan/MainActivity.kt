@@ -1,21 +1,30 @@
 package com.erw.kickthecan
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import com.erw.kickthecan.databinding.ActivityMainBinding
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    companion object{
+        const val KICK_THE_CAN_EVENT_TAG = "KICK THE CAN: "
+        const val KICK_THE_CAN_DESCRIPTION = "This event is managed by KICK THE CAN."
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -31,9 +40,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
-                .setAction("Action", null).show()
+            val beginTime: Calendar = Calendar.getInstance()
+            val endTime: Calendar = Calendar.getInstance()
+            endTime.set(2022, 0, 19, 8, 30)
+            val intent: Intent = Intent(Intent.ACTION_INSERT)
+                .setData(Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.timeInMillis)
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.timeInMillis)
+                .putExtra(Events.TITLE, KICK_THE_CAN_EVENT_TAG)
+                .putExtra(Events.DESCRIPTION, KICK_THE_CAN_DESCRIPTION)
+                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+            startActivity(intent)
         }
     }
 
