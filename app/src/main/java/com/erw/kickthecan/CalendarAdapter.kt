@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarItemAdapter: RecyclerView.Adapter<CalendarItemAdapter.ViewHolder>() {
+class CalendarAdapter: RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
-    var data: MutableList<CalendarItem> = mutableListOf()
+    var data: MutableList<MyCalendar> = mutableListOf()
 
     fun clearData() {
         data.clear()
         notifyDataSetChanged()
     }
 
-    fun pushData(calendars: ArrayList<CalendarItem>) {
-        for(calendar in calendars){
+    fun pushData(myCalendars: ArrayList<MyCalendar>) {
+        for(calendar in myCalendars){
             data.add(calendar)
         }
         notifyDataSetChanged()

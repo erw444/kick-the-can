@@ -11,36 +11,34 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.erw.kickthecan.databinding.FragmentFirstBinding
+import com.erw.kickthecan.databinding.FragmentHomeBinding
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var calendarService: CalendarService
-    private lateinit var calendarItemAdapter: CalendarItemAdapter
+    private lateinit var calendarItemAdapter: CalendarAdapter
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        calendarService = CalendarService()
-        calendarItemAdapter = CalendarItemAdapter()
+        calendarItemAdapter = CalendarAdapter()
 
         // Setup permission request launcher
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()){
                 if (it == true) {
-                    val calendars = calendarService.getCalendars(this.requireActivity())
-                    calendarItemAdapter.pushData(calendars)
+                    /*/val calendars = CalendarService.getCalendars(this.requireActivity())
+                    calendarItemAdapter.pushData(calendars)*/
                 } else {
                     Toast.makeText(
                         this.requireContext(),
@@ -51,7 +49,7 @@ class FirstFragment : Fragment() {
             }
         requestPermissionLauncher.launch(Manifest.permission.READ_CALENDAR)
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
     }
