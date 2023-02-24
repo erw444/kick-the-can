@@ -6,6 +6,6 @@
     <string name="pick_calendar_label">Pick a Calendar</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
+    <string name="setting_chosen_calendar">setting chosen calendar</string>
     <string name="new_list_name_default">List Name</string>
 </resources>

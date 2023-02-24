@@ -1,11 +1,13 @@
 package com.erw.kickthecan
 
+import android.app.Activity
 import android.content.Context
 import android.provider.CalendarContract
 
+
 object CalendarService {
 
-    lateinit var chosenMyCalendar: MyCalendar
+    var chosenMyCalendar: MyCalendar? = MyCalendar()
 
     private val EVENT_PROJECTION = arrayOf(
         CalendarContract.Calendars._ID,
@@ -17,6 +19,7 @@ object CalendarService {
         CalendarContract.Calendars.ACCOUNT_NAME,
         CalendarContract.Calendars.ACCOUNT_TYPE,
     )
+
     private const val PROJECTION_ID_INDEX = 0
     private const val PROJECTION_DISPLAY_NAME_INDEX = 1
     private const val PROJECTION_NAME_INDEX = 2
@@ -26,12 +29,15 @@ object CalendarService {
     private const val PROJECTION_ACCOUNT_NAME_INDEX = 6
     private const val PROJECTION_ACCOUNT_TYPE_INDEX = 7
 
-    init{
-        chosenMyCalendar = MyCalendar()
-    }
+    private fun CalendarService() {}
 
-    fun getChosenCalendar(): MyCalendar{
-        return chosenMyCalendar
+    fun init(context: Context) {
+        val sharedPref = context.getSharedPreferences(context.packageName, Activity.MODE_PRIVATE)
+        val label = context.getString(R.string.setting_chosen_calendar)
+        val chosenCalendarName = sharedPref.getString(label, "");
+        val calendars = getCalendars(context)
+
+        chosenMyCalendar = calendars[chosenCalendarName]
     }
 
     fun getCalendars(context: Context) : HashMap<String, MyCalendar> {
