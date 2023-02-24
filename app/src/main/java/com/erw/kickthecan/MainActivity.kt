@@ -42,13 +42,13 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
+            val chosenCalendar = CalendarService.chosenMyCalendar
+
             val beginTime: Calendar = Calendar.getInstance()
             val endTime: Calendar = Calendar.getInstance()
             endTime.set(2022, 0, 19, 8, 30)
             val intent: Intent = Intent(Intent.ACTION_INSERT)
                 .setData(Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.timeInMillis)
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.timeInMillis)
                 .putExtra(Events.TITLE, KICK_THE_CAN_EVENT_TAG)
                 .putExtra(Events.DESCRIPTION, KICK_THE_CAN_DESCRIPTION)
                 .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)

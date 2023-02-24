@@ -24,21 +24,20 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var calendarItemAdapter: CalendarAdapter
+    private lateinit var eventAdapter: EventAdapter
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        calendarItemAdapter = CalendarAdapter()
+        eventAdapter = EventAdapter()
 
         // Setup permission request launcher
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()){
                 if (it == true) {
-                    /*/val calendars = CalendarService.getCalendars(this.requireActivity())
-                    calendarItemAdapter.pushData(calendars)*/
+                    refreshRecyclerView()
                 } else {
                     Toast.makeText(
                         this.requireContext(),
@@ -59,12 +58,23 @@ class HomeFragment : Fragment() {
 
         view.findViewById<RecyclerView>(R.id.recycler_list_view).let {
             it.layoutManager = LinearLayoutManager(activity)
-            it.adapter = calendarItemAdapter
+            it.adapter = eventAdapter
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshRecyclerView()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun refreshRecyclerView(){
+        eventAdapter.clearData()
+        val cans = CalendarService.collectCans(this.requireActivity())
+        eventAdapter.pushData(cans)
     }
 }

@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarAdapter: RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+class EventAdapter: RecyclerView.Adapter<EventAdapter.ViewHolder>() {
 
-    var data: MutableList<MyCalendar> = mutableListOf()
+    var data: MutableList<EventCan> = mutableListOf()
 
     fun clearData() {
         data.clear()
         notifyDataSetChanged()
     }
 
-    fun pushData(myCalendars: ArrayList<MyCalendar>) {
-        for(calendar in myCalendars){
-            data.add(calendar)
+    fun pushData(eventCans: List<EventCan>) {
+        for(can in eventCans){
+            data.add(can)
         }
         notifyDataSetChanged()
     }
@@ -34,7 +34,7 @@ class CalendarAdapter: RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val datum = data[position]
-        holder.textDisplayName.text = datum.displayName
+        holder.textDisplayName.text = datum.name
     }
 
     override fun getItemCount(): Int {

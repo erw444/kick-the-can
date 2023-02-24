@@ -4,12 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.provider.CalendarContract
 
-
 object CalendarService {
 
     var chosenMyCalendar: MyCalendar? = MyCalendar()
 
-    private val EVENT_PROJECTION = arrayOf(
+    private val CALENDAR_PROJECTION = arrayOf(
         CalendarContract.Calendars._ID,
         CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
         CalendarContract.Calendars.NAME,
@@ -18,6 +17,11 @@ object CalendarService {
         CalendarContract.Calendars.SYNC_EVENTS,
         CalendarContract.Calendars.ACCOUNT_NAME,
         CalendarContract.Calendars.ACCOUNT_TYPE,
+    )
+
+    private val EVENT_PROJECTION = arrayOf(
+        CalendarContract.Events._ID,
+        CalendarContract.Events.TITLE,
     )
 
     private const val PROJECTION_ID_INDEX = 0
@@ -42,11 +46,11 @@ object CalendarService {
 
     fun getCalendars(context: Context) : HashMap<String, MyCalendar> {
         val uri = CalendarContract.Calendars.CONTENT_URI
-        val selection = ""
+        val selection = "${CalendarContract.Calendars.ACCOUNT_NAME} = ${CalendarContract.Calendars.CALENDAR_DISPLAY_NAME}"
         val selectionArgs = emptyArray<String>()
         val cur = context.contentResolver.query(
             uri,
-            EVENT_PROJECTION,
+            CALENDAR_PROJECTION,
             selection, selectionArgs,
             null,
         )
@@ -61,7 +65,7 @@ object CalendarService {
             val accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX)
             val accountType = cur.getString(PROJECTION_ACCOUNT_TYPE_INDEX)
 
-            val myCalendarItem = MyCalendar(
+            val myCalendar = MyCalendar(
                     id = calId,
                     name = name,
                     displayName = displayName,
@@ -72,11 +76,39 @@ object CalendarService {
                     accountType = accountType,
             )
 
-            myCalendarItem.accountName?.let { myCalendars.put(it, myCalendarItem) }
+            myCalendar.accountName?.let { myCalendars.put(it, myCalendar) }
 
         }
         cur?.close()
 
         return myCalendars
+    }
+
+    fun collectCans(context: Context) : List<EventCan>{
+        val uri = CalendarContract.Events.CONTENT_URI
+        val selection = "${CalendarContract.Events.TITLE} LIKE '%${MainActivity.KICK_THE_CAN_EVENT_TAG}%'"
+        val selectionArgs = emptyArray<String>()
+        val cur = context.contentResolver.query(
+            uri,
+            EVENT_PROJECTION,
+            selection, selectionArgs,
+            null,
+        )
+        val cans = ArrayList<EventCan>()
+        while (cur?.moveToNext() == true) {
+            val eventId = cur.getLong(PROJECTION_ID_INDEX)
+            val displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX)
+
+            val eventCan = EventCan(
+                id = eventId,
+                name = displayName,
+            )
+
+            cans.add(eventCan)
+
+        }
+        cur?.close()
+
+        return cans
     }
 }
