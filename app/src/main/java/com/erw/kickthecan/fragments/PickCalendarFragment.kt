@@ -1,4 +1,4 @@
-package com.erw.kickthecan
+package com.erw.kickthecan.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,9 +10,10 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.erw.kickthecan.CalendarService
+import com.erw.kickthecan.R
+import com.erw.kickthecan.data.MyCalendar
 import com.erw.kickthecan.databinding.FragmentPickCalendarBinding
-import kotlinx.coroutines.NonDisposableHandle.parent
-import kotlinx.coroutines.selects.select
 
 
 /**

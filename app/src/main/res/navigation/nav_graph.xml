@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.erw.kickthecan.HomeFragment"
+        android:name="com.erw.kickthecan.fragments.HomeFragment"
         android:label="@string/home_screen_label"
         tools:layout="@layout/fragment_home">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/PickCalendarFragment"
-        android:name="com.erw.kickthecan.PickCalendarFragment"
+        android:name="com.erw.kickthecan.fragments.PickCalendarFragment"
         android:label="@string/pick_calendar_label"
         tools:layout="@layout/fragment_pick_calendar">
 

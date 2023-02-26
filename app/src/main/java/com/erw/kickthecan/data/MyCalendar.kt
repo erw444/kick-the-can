@@ -1,4 +1,4 @@
-package com.erw.kickthecan
+package com.erw.kickthecan.data
 
 data class MyCalendar(
     val id: Long = -1,

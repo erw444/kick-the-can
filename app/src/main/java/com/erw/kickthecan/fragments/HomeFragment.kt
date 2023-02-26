@@ -1,4 +1,4 @@
-package com.erw.kickthecan
+package com.erw.kickthecan.fragments
 
 import android.Manifest
 import android.os.Bundle
@@ -11,6 +11,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.erw.kickthecan.CalendarService
+import com.erw.kickthecan.EventAdapter
+import com.erw.kickthecan.R
 import com.erw.kickthecan.databinding.FragmentHomeBinding
 
 /**

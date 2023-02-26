@@ -3,6 +3,12 @@ package com.erw.kickthecan
 import android.app.Activity
 import android.content.Context
 import android.provider.CalendarContract
+import com.erw.kickthecan.data.EventCan
+import com.erw.kickthecan.data.MyCalendar
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object CalendarService {
 
@@ -18,12 +24,6 @@ object CalendarService {
         CalendarContract.Calendars.ACCOUNT_NAME,
         CalendarContract.Calendars.ACCOUNT_TYPE,
     )
-
-    private val EVENT_PROJECTION = arrayOf(
-        CalendarContract.Events._ID,
-        CalendarContract.Events.TITLE,
-    )
-
     private const val PROJECTION_ID_INDEX = 0
     private const val PROJECTION_DISPLAY_NAME_INDEX = 1
     private const val PROJECTION_NAME_INDEX = 2
@@ -32,6 +32,19 @@ object CalendarService {
     private const val PROJECTION_SYNC_EVENTS_INDEX = 5
     private const val PROJECTION_ACCOUNT_NAME_INDEX = 6
     private const val PROJECTION_ACCOUNT_TYPE_INDEX = 7
+
+    private val EVENT_PROJECTION = arrayOf(
+        CalendarContract.Events._ID,
+        CalendarContract.Events.TITLE,
+        CalendarContract.Events.DESCRIPTION,
+        CalendarContract.Events.DTSTART
+    )
+    private const val EVENT_PROJECTION_ID_INDEX = 0
+    private const val EVENT_PROJECTION_DISPLAY_NAME_INDEX = 1
+    private const val EVENT_PROJECTION_DESCRIPTION_INDEX = 2
+    private const val EVENT_PROJECTION_START_DATE_INDEX = 3
+
+
 
     private fun CalendarService() {}
 
@@ -96,12 +109,26 @@ object CalendarService {
         )
         val cans = ArrayList<EventCan>()
         while (cur?.moveToNext() == true) {
-            val eventId = cur.getLong(PROJECTION_ID_INDEX)
-            val displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX)
+            val eventId = cur.getLong(EVENT_PROJECTION_ID_INDEX)
+            val displayName = cur.getString(EVENT_PROJECTION_DISPLAY_NAME_INDEX)
+            val description = cur.getString(EVENT_PROJECTION_DESCRIPTION_INDEX)
+            val eventDateMillis = cur.getLong(EVENT_PROJECTION_START_DATE_INDEX)
+
+            val eventDateFormat = "MM-dd-yyyy"
+            val formatter = SimpleDateFormat(eventDateFormat)
+
+            // Create a calendar object that will convert the date and time value in milliseconds to date.
+
+            // Create a calendar object that will convert the date and time value in milliseconds to date.
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.setTimeInMillis(eventDateMillis)
+
 
             val eventCan = EventCan(
                 id = eventId,
                 name = displayName,
+                description = description,
+                date = formatter.format(calendar.time)
             )
 
             cans.add(eventCan)
