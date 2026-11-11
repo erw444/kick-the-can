@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.erw.kickthecan.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -25,4 +25,9 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/TrackedEventsFragment"
+        android:name="com.erw.kickthecan.TrackedEventsFragment"
+        android:label="@string/tracked_events_label"
+        tools:layout="@layout/fragment_tracked_events" />
 </navigation>

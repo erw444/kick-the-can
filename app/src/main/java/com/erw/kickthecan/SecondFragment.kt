@@ -45,7 +45,7 @@ class SecondFragment : Fragment() {
             }, start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH)).show()
         }
         binding.timeButton.setOnClickListener {
-            TimePickerDialog(requireContext(), { _, h, min ->
+            TimePickerDialog(requireContext(), R.style.SpinnerTimePickerDialog, { _, h, min ->
                 start.set(Calendar.HOUR_OF_DAY, h)
                 start.set(Calendar.MINUTE, min)
                 updateButtons()

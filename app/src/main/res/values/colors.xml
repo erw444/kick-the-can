@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="halloween_orange">#FFFF6D00</color>
+    <color name="halloween_orange_dark">#FFB34A00</color>
+    <color name="halloween_surface">#FF0A0A0A</color>
+    <color name="halloween_surface_container">#FF1A1210</color>
+    <color name="halloween_on_surface">#FFFFE6D2</color>
 </resources>

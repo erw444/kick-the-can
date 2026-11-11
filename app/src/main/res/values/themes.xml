@@ -1,9 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.KickTheCan" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Always-dark Halloween theme: black surfaces with orange accents. -->
+    <style name="Base.Theme.KickTheCan" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/halloween_orange</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">@color/halloween_orange_dark</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSecondary">@color/halloween_orange</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorTertiary">@color/halloween_orange</item>
+        <item name="colorOnTertiary">@color/black</item>
+        <item name="android:colorBackground">@color/black</item>
+        <item name="colorSurface">@color/halloween_surface</item>
+        <item name="colorOnSurface">@color/halloween_on_surface</item>
+        <item name="colorOnBackground">@color/halloween_on_surface</item>
+        <item name="colorSurfaceContainer">@color/halloween_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/halloween_surface_container</item>
+        <item name="colorSurfaceContainerHighest">@color/halloween_surface_container</item>
+        <item name="colorSurfaceVariant">@color/halloween_surface_container</item>
+        <item name="colorOutline">@color/halloween_orange_dark</item>
     </style>
 
     <style name="Theme.KickTheCan" parent="Base.Theme.KickTheCan" />
+
+    <!-- Scroll-wheel time picker with one-minute precision. -->
+    <style name="SpinnerTimePicker" parent="android:Widget.Material.TimePicker">
+        <item name="android:timePickerMode">spinner</item>
+    </style>
+
+    <style name="SpinnerTimePickerDialog" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="android:timePickerStyle">@style/SpinnerTimePicker</item>
+        <item name="android:windowBackground">@color/halloween_surface_container</item>
+        <item name="android:colorBackground">@color/halloween_surface_container</item>
+        <item name="android:textColorPrimary">@color/halloween_orange</item>
+        <item name="android:textColorSecondary">@color/halloween_on_surface</item>
+        <item name="android:textColor">@color/halloween_orange</item>
+        <item name="android:colorAccent">@color/halloween_orange</item>
+        <item name="colorAccent">@color/halloween_orange</item>
+        <item name="colorControlActivated">@color/halloween_orange</item>
+        <item name="android:buttonBarButtonStyle">@style/SpinnerDialogButton</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/SpinnerDialogButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/SpinnerDialogButton</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/SpinnerDialogButton</item>
+    </style>
+
+    <!-- Black icons (overflow menu) on the orange toolbar. -->
+    <style name="ThemeOverlay.KickTheCan.Toolbar" parent="">
+        <item name="colorControlNormal">@color/black</item>
+    </style>
+
+    <style name="SpinnerDialogButton" parent="android:Widget.Material.Button.Borderless">
+        <item name="android:textColor">@color/halloween_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

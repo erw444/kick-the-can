@@ -10,69 +10,63 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /**
- * Two-way sync between [EventRepository] and Google Calendar:
+ * Two-way sync between [EventRepository] and the device calendar:
  * pushes local deletes and dirty events, then pulls remote deletions/time changes.
  */
 class CalendarSync(context: Context) {
 
     sealed interface Result {
         data object Success : Result
-        data object NeedsAuth : Result
+        data object NeedsPermission : Result
         data class Failed(val message: String) : Result
     }
 
     private val appContext = context.applicationContext
     private val repository = EventRepository(appContext)
-    private val api = CalendarApi()
+    private val store = CalendarStore(appContext)
 
     suspend fun sync(): Result = mutex.withLock {
-        val auth = try {
-            CalendarAuth.authorize(appContext)
-        } catch (e: Exception) {
-            return Result.Failed(e.message ?: "Authorization failed")
-        }
-        val token = auth.accessToken
-        if (auth.hasResolution() || token == null) return Result.NeedsAuth
+        if (!CalendarAccess.hasPermission(appContext)) return Result.NeedsPermission
 
         // Not cancellable: cancelling between an insert and markSynced would create duplicates.
         withContext(NonCancellable + Dispatchers.IO) {
             try {
-                push(token)
-                pull(token)
+                push()
+                pull()
                 Result.Success
-            } catch (e: CalendarApi.AuthException) {
-                Result.NeedsAuth
+            } catch (e: SecurityException) {
+                Result.NeedsPermission
             } catch (e: IOException) {
-                Result.Failed(e.message ?: "Network error")
+                Result.Failed(e.message ?: "Calendar error")
             }
         }
     }
 
-    private fun push(token: String) {
+    private fun push() {
         repository.pendingDeletes().forEach {
-            api.delete(token, it)
+            store.delete(it)
             repository.clearPendingDelete(it)
         }
         repository.all().filter { it.dirty }.forEach { event ->
             val existing = event.googleEventId
             val googleId = if (existing == null) {
-                api.insert(token, event.title, event.startMillis, event.endMillis, event.id)
-            } else if (api.move(token, existing, event.startMillis, event.endMillis)) {
+                store.insert(event.title, event.startMillis, event.endMillis)
+            } else if (store.move(existing, event.startMillis, event.endMillis)) {
                 existing
             } else {
-                // Removed in Calendar meanwhile; recreate it with the new time.
-                api.insert(token, event.title, event.startMillis, event.endMillis, event.id)
+                // Removed from the calendar meanwhile; recreate it with the new time.
+                store.insert(event.title, event.startMillis, event.endMillis)
             }
             repository.markSynced(event.id, googleId, event.version)
         }
     }
 
-    private fun pull(token: String) {
+    private fun pull() {
         repository.all().filter { !it.dirty && it.googleEventId != null }.forEach { event ->
-            val remote = api.get(token, event.googleEventId!!)
+            val remote = store.get(event.googleEventId!!)
             if (remote == null) {
                 repository.removeIfClean(event.id)
-            } else if (remote.startMillis != null && remote.endMillis != null &&
+            } else if (remote.endMillis != null &&
                 (remote.startMillis != event.startMillis || remote.endMillis != event.endMillis)
             ) {
                 repository.applyRemoteTimes(event.id, remote.startMillis, remote.endMillis)

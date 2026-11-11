@@ -1,24 +1,26 @@
 package com.erw.kickthecan.data
 
 import android.content.Context
+import com.erw.kickthecan.notify.MissedNotifier
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
 /**
  * Local store for events created by the app (SharedPreferences, JSON). Local changes are
- * flagged dirty and pushed to Google Calendar by [com.erw.kickthecan.calendar.CalendarSync].
+ * flagged dirty and pushed to the device calendar by [com.erw.kickthecan.calendar.CalendarSync].
  * All access is serialized on [lock] because sync runs on a background thread.
  */
 class EventRepository(context: Context) {
 
-    private val prefs = context.applicationContext
+    private val appContext = context.applicationContext
+    private val prefs = appContext
         .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun all(): List<TrackedEvent> = synchronized(lock) { load() }
 
     fun missed(now: Long = System.currentTimeMillis()): List<TrackedEvent> =
-        all().filter { it.endMillis < now }.sortedBy { it.startMillis }
+        all().filter { it.startMillis < now }.sortedBy { it.startMillis }
 
     fun add(title: String, startMillis: Long, endMillis: Long): TrackedEvent = synchronized(lock) {
         val event = TrackedEvent(UUID.randomUUID().toString(), title, startMillis, endMillis)
@@ -51,17 +53,17 @@ class EventRepository(context: Context) {
         prefs.edit().putStringSet(KEY_PENDING_DELETES, pendingDeletes() - googleEventId).apply()
     }
 
-    /** Records the Google id; clears the dirty flag only if the event wasn't changed since [version]. */
+    /** Records the calendar event id; clears the dirty flag only if the event wasn't changed since [version]. */
     fun markSynced(id: String, googleEventId: String, version: Int) = update(id) {
         it.copy(googleEventId = googleEventId, dirty = it.dirty && it.version != version)
     }
 
-    /** Applies a change made in Google Calendar, unless there are unsynced local changes. */
+    /** Applies a change made in the device calendar, unless there are unsynced local changes. */
     fun applyRemoteTimes(id: String, startMillis: Long, endMillis: Long) = update(id) {
         if (it.dirty) it else it.copy(startMillis = startMillis, endMillis = endMillis)
     }
 
-    /** Drops an event that no longer exists in Google Calendar, unless it has unsynced local changes. */
+    /** Drops an event that no longer exists in the device calendar, unless it has unsynced local changes. */
     fun removeIfClean(id: String) = synchronized(lock) {
         save(load().filterNot { it.id == id && !it.dirty })
     }
@@ -88,6 +90,7 @@ class EventRepository(context: Context) {
     }
 
     private fun save(events: List<TrackedEvent>) {
+        MissedNotifier.reschedule(appContext, events)
         val array = JSONArray()
         events.forEach {
             array.put(
