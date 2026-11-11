@@ -1,13 +1,23 @@
 <resources>
     <string name="app_name">Kick the Can</string>
-    <string name="action_pick_calendar">Pick Calendar</string>
+    <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="home_screen_label">Kick the Cans</string>
-    <string name="pick_calendar_label">Pick a Calendar</string>
+    <string name="first_fragment_label">Missed events</string>
+    <string name="second_fragment_label">Add event</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="setting_chosen_calendar">setting chosen calendar</string>
-    <string name="event_title_default">Event</string>
-    <string name="event_description_default">This Event Is Managed by KICK THE CAN</string>
-    <string name="event_date_default">09/09/2022</string>
+    <string name="kick_the_can">Kick the can</string>
+    <string name="not_connected">Not connected to Google Calendar</string>
+    <string name="connect_google">Connect</string>
+    <string name="connect_cancelled">Google Calendar access was not granted</string>
+    <string name="sync_failed">Sync failed: %1$s</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="event_title">Event title</string>
+    <string name="title_required">Title is required</string>
+    <string name="nothing_missed">Nothing missed. Nice.</string>
+    <string name="kick_tomorrow">Tomorrow</string>
+    <string name="kick_three_days">In 3 days</string>
+    <string name="kick_next_week">Next week</string>
+    <string name="delete_confirm">Delete \"%1$s\"?</string>
 </resources>

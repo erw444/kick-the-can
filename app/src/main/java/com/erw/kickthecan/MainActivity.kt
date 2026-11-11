@@ -1,58 +1,50 @@
 package com.erw.kickthecan
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.CalendarContract
-import android.provider.CalendarContract.Events
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import android.view.Menu
+import android.view.MenuItem
 import com.erw.kickthecan.databinding.ActivityMainBinding
-import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    companion object{
-        const val KICK_THE_CAN_EVENT_TAG = "KICK THE CAN: "
-        const val KICK_THE_CAN_DESCRIPTION = "This event is managed by KICK THE CAN."
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-
-        CalendarService.init(this)
+        enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            val chosenCalendar = CalendarService.chosenMyCalendar
-
-            val beginTime: Calendar = Calendar.getInstance()
-            val endTime: Calendar = Calendar.getInstance()
-            endTime.set(2022, 0, 19, 8, 30)
-            val intent: Intent = Intent(Intent.ACTION_INSERT)
-                .setData(Events.CONTENT_URI)
-                .putExtra(Events.TITLE, KICK_THE_CAN_EVENT_TAG)
-                .putExtra(Events.DESCRIPTION, KICK_THE_CAN_DESCRIPTION)
-                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
-            startActivity(intent)
+        binding.fab.setOnClickListener {
+            navController.navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.FirstFragment) binding.fab.show() else binding.fab.hide()
         }
     }
 
@@ -67,12 +59,8 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> {
-                findNavController(R.id.nav_host_fragment_content_main).navigate(com.erw.kickthecan.R.id.action_HomeFragment_to_PickCalendarFragment)
-                true
-            } else ->{
-                super.onOptionsItemSelected(item)
-            }
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -81,5 +69,4 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
-
 }
